@@ -9,7 +9,7 @@ localhost = {
         "host" : "bokrug",
         "srv_root" : "/home/branan/plasma/urulive/server/"
     }
-} # defining ssh information for "localhost" allows install scripts running in virtualbox to copy files to the host machine. Not needed if nothing runs on virtualbox
+}
 
 buildbox = {
     "type" : "vbox",
