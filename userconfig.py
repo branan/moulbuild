@@ -29,8 +29,6 @@ live_server = {
     "ssh_user" : "buildbot",
     "ssh_host" : "guildofwriters.com",
     "client_args" : {
-        "user" : "buildbot",
-        "host" : "guildofwriters.com",
         "srv_root" : "/var/srv/urulive/"
     }
 }
