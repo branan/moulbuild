@@ -20,4 +20,4 @@ def dispatch(job):
                 return
             except PlatformError:
                 pass
-    raise RuntimeError("None of the listed platforms for this target were available!")
+    raise RuntimeError("None of the accepted platforms for target %s are available" % job["command"])
