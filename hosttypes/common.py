@@ -40,10 +40,9 @@ def get_command(host,job):
     if len(arg_dict) == 0:
         return (command,args)
     for arg, val in arg_dict.items():
-        next_arg = "--%s" % (arg)
+        args.append("--%s" % (arg))
         if len(val):
-            next_arg = next_arg + "=%s" % (val)
-        args.append(next_arg)
+            args.append(val)
     return (command,args)
 
 def exec_job(argv):
