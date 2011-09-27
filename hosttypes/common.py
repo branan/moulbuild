@@ -4,10 +4,6 @@ class PlatformError(RuntimeError):
     def __init__(self,msg):
         RuntimeError.__init__(self,msg)
 
-class BuildError(RuntimeError):
-    def __init__(self,msg):
-        RuntimeError.__init__(self,msg)
-
 def verify_precond_same_host(host,pre_jobs):
     for j in pre_jobs:
         if j["build_host"] is not host:
@@ -50,4 +46,4 @@ def exec_job(argv):
     process = subprocess.Popen(argv)
     process.wait()
     if process.returncode != 0:
-        raise BuildError("Error building target")
+        raise RuntimeError()
