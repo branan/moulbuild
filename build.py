@@ -1,12 +1,24 @@
 import targets
 import dispatcher
 
+verbose_except = True
+
 def build():
-    for t in targets.targets:
-        dispatcher.dispatch(t)
+    try:
+        for t in targets.targets:
+            dispatcher.dispatch(t)
+    except OSError as e:
+        if (verbose_except):
+            raise
+        else:
+            print e.strerror
+    except Exception as e:
+        if (verbose_except):
+            raise
+        else:
+            print e
 
 if __name__ == "__main__":
-    try:
-        build()
-    except OSError as e:
-        print e.strerror
+    verbose_except = False
+    build()
+    
