@@ -6,4 +6,7 @@ def build():
         dispatcher.dispatch(t)
 
 if __name__ == "__main__":
-    build()
+    try:
+        build()
+    except OSError as e:
+        print e.strerror

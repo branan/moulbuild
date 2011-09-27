@@ -1,4 +1,10 @@
+import subprocess
+
 class PlatformError(RuntimeError):
+    def __init__(self,msg):
+        RuntimeError.__init__(self,msg)
+
+class BuildError(RuntimeError):
     def __init__(self,msg):
         RuntimeError.__init__(self,msg)
 
@@ -15,6 +21,7 @@ def verify_preconditions(host,job):
 
 def get_command(host,job):
     verify_preconditions(host,job)
+    args = []
     command = host["script_path"]
     try:
         command = command + job["command"][host["platform"]]
@@ -22,7 +29,7 @@ def get_command(host,job):
         raise PlatformError(host["platform"])
     job["build_host"] = host
     arg_dict = {}
-    args = ""
+    args = []
     try:
         arg_host = job["client_args"]["build_host"] # we make a copy so we can override arguments if necessary
         arg_dict = dict(arg_host["client_args"])
@@ -33,7 +40,15 @@ def get_command(host,job):
     if len(arg_dict) == 0:
         return (command,args)
     for arg, val in arg_dict.items():
-        args = args + " --%s" % (arg)
+        next_arg = "--%s" % (arg)
         if len(val):
-            args = args + "='%s'" % (val)
+            next_arg = next_arg + "=%s" % (val)
+        args.append(next_arg)
     return (command,args)
+
+def exec_job(argv):
+    print ' '.join(argv)
+    process = subprocess.Popen(argv)
+    process.wait()
+    if process.returncode != 0:
+        raise BuildError("Error building target")

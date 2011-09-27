@@ -9,4 +9,6 @@ def run_job(host,job):
     tpl = common.get_command(host,job)
     command = tpl[0]
     args = tpl[1]
-    print "%s %s" % (command, args)
+    argv = [command]
+    argv.extend(args)
+    common.exec_job(argv)

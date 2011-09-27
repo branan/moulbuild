@@ -12,12 +12,14 @@ localhost = {
 }
 
 buildbox = {
-    "type" : "vbox",
+    "type" : "ssh",
     "platform" : "windows",
     "script_path" : "C:\\urulive\\scripts\\",
-    "vbox_name" : "Uru Build Server",
-    "vbox_user" : "buildbot",
-    "vbox_pass" : "password",
+#    "vbox_name" : "Uru Build Server",
+#    "vbox_user" : "buildbot",
+#    "vbox_pass" : "password",
+    "ssh_user" : "buildbot",
+    "ssh_host" : "192.168.1.35",
     "client_args" : {
     }
 }
@@ -33,7 +35,7 @@ live_server = {
     }
 }
 
-allowed_hosts = [buildbox,live_server,localhost]
+allowed_hosts = [localhost,buildbox,live_server]
 
 
 # TARGETS
@@ -56,8 +58,8 @@ cwe_python = {
 build_datafiles = {
     "hosts" : [localhost,buildbox],
     "command" : {
-        "windows" : "build_datafiles.py",
-        "linux" : "build_datafiles.py"
+        "windows" : "build_datafiles.bat",
+        "linux" : "build_datafiles.sh"
     },
 }
 

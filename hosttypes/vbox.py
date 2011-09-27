@@ -7,4 +7,8 @@ def run_job(host,job):
     tpl = common.get_command(host,job)
     command = tpl[0]
     args = tpl[1]
-    print "VBoxManage --nologo guestcontrol '%s' execute --image '%s' --username '%s' --password '%s' --wait-exit --wait-stdout --%s" % (host["vbox_name"], command, host["vbox_user"], host["vbox_pass"], args)
+    argv = ["VBoxManage", "--nologo", "guestcontrol", host["vbox_name"], "execute", "--image", command, "--username", host["vbox_user"], "--password", host["vbox_pass"], "--wait-exit", "--wait-stdout", "--verbose"]
+    if len(args) != 0:
+        argv.append("--")
+        argv.extend(args)
+    common.exec_job(argv)
