@@ -58,8 +58,8 @@ cwe_python = {
 build_datafiles = {
     "hosts" : [localhost,buildbox],
     "command" : {
-        "windows" : "build_datafiles.bat",
-        "linux" : "build_datafiles.sh"
+        "windows" : "build_datafiles.py",
+        "linux" : "build_datafiles.py"
     },
 }
 
