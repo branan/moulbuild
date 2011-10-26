@@ -64,9 +64,8 @@ build_datafiles = {
 }
 
 build_server = {
-    "hosts" : [live_server,localhost],
+    "hosts" : [live_server,localhost,buildbox],
     "command" : {
-        "linux" : "build_server.sh",
         "windows" : "build_server.bat"
     },
 }
@@ -82,7 +81,7 @@ stop_server = {
 install_cwe = {
     "hosts" : [localhost,buildbox],
     "command" : {
-        "windows" : "install_cwe.bat"
+        "windows" : "install_cwe.py"
     },
     "depends" : [cwe_client, cwe_python, stop_server],
     "precond_same_host" : [cwe_client,cwe_python],
@@ -90,13 +89,14 @@ install_cwe = {
 }
 
 install_server = {
-    "hosts" : [live_server,localhost],
+    "hosts" : [live_server,localhost,buildbox],
     "command" : {
-        "linux" : "install_server.sh",
-        "windows" : "install_server.bat"
+        "linux" : "install_server.py",
+        "windows" : "install_server.py"
     },
     "depends" : [stop_server,build_server],
-    "precond_same_host" : [stop_server,build_server]
+    "precond_same_host" : [build_server],
+    "client_args" : stop_server
 }
 
 install_datafiles = {
@@ -117,7 +117,7 @@ generate_manifests = {
         "linux" : "build_manifest.py"
     },
     "depends" : [install_datafiles, install_cwe, install_server],
-    "precond_same_host" : [install_server]
+    "precond_same_host" : [stop_server]
 }
 
 start_server = {
