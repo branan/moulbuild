@@ -1,5 +1,9 @@
 # This file defines the available systems and the available targets.
 
+# General configuration
+# server_type = "pldotnet"
+server_type = "dirtsand"
+
 # HOSTS
 localhost = {
     "type" : "local",
@@ -63,20 +67,37 @@ build_datafiles = {
     },
 }
 
-build_server = {
+build_pldotnet = {
     "hosts" : [live_server,localhost,buildbox],
     "command" : {
-        "windows" : "build_server.bat"
+        "windows" : "build_pldotnet.bat"
     },
 }
 
-stop_server = {
+stop_pldotnet = {
     "hosts" : [live_server,localhost],
+    "depends" : [cwe_client, cwe_python, build_pldotnet],
     "command" : {
-        "linux" : "stop_server.sh",
-        "windows" : "stop_server.bat"
+        "linux" : "stop_pldotnet.sh",
+        "windows" : "stop_pldotnet.bat"
     },
 }
+
+build_dirtsand = {
+    "hosts" : [live_server,localhost,buildbox],
+    "command" : {
+        "linux" : "build_dirtsand.sh"
+    },
+}
+
+stop_dirtsand = {
+    "hosts" : [live_server,localhost],
+    "depends" : [cwe_client, cwe_python, build_dirtsand],
+    "command" : {
+        "linux" : "stop_dirtsand.sh",
+    },
+}
+stop_server = locals()['stop_'+server_type]
 
 install_cwe = {
     "hosts" : [localhost,buildbox],
@@ -88,15 +109,25 @@ install_cwe = {
     "client_args" : stop_server
 }
 
-install_server = {
+install_pldotnet = {
     "hosts" : [live_server,localhost,buildbox],
     "command" : {
-        "linux" : "install_server.py",
-        "windows" : "install_server.py"
+        "linux" : "install_pldotnet.py",
+        "windows" : "install_pldotnet.py"
     },
-    "depends" : [stop_server,build_server],
-    "precond_same_host" : [build_server],
-    "client_args" : stop_server
+    "depends" : [stop_pldotnet,build_pldotnet],
+    "precond_same_host" : [build_pldotnet],
+    "client_args" : stop_pldotnet
+}
+
+install_dirtsand = {
+    "hosts" : [live_server,localhost,buildbox],
+    "command" : {
+        "linux" : "install_dirtsand.py",
+    },
+    "depends" : [stop_dirtsand,build_dirtsand],
+    "precond_same_host" : [build_dirtsand],
+    "client_args" : stop_dirtsand
 }
 
 install_datafiles = {
@@ -116,18 +147,28 @@ generate_manifests = {
         "windows" : "build_manifest.py",
         "linux" : "build_manifest.py"
     },
-    "depends" : [install_datafiles, install_cwe, install_server],
-    "precond_same_host" : [stop_server]
+    "depends" : [install_datafiles, install_cwe],
+    "precond_same_host" : [stop_server],
+    "client_args" : stop_server
 }
 
-start_server = {
+start_pldotnet = {
     "hosts" : [live_server,localhost],
     "command" : {
-        "linux" : "start_server.sh",
-        "windows" : "start_server.bat",
+        "linux" : "start_pldotnet.sh",
+        "windows" : "start_pldotnet.bat",
     },
-    "depends" : [generate_manifests, install_cwe],
+    "depends" : [generate_manifests, install_pldotnet],
     "precond_same_host" : [generate_manifests]
 }
 
-main_target = start_server
+start_dirtsand = {
+    "hosts" : [live_server,localhost],
+    "command" : {
+        "linux" : "start_dirtsand.sh",
+    },
+    "depends" : [generate_manifests, install_dirtsand],
+    "precond_same_host" : [generate_manifests]
+}
+
+main_target = locals()['start_'+server_type]
